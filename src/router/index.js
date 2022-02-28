@@ -4,18 +4,23 @@ import Home from '../views/Home.vue'
 const routes = [
     {
         path: '/',
-        name: 'Home',
+        name: 'home',
         component: Home
     },
     {
         path: '/about',
-        name: 'About',
+        name: 'about',
         component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
     },
     {
         path: '/counter',
         name: 'counter',
         component: () => import(/* webpackChunkName: "counter" */ '../views/Counter.vue')
+    },
+    {
+        path: '/users',
+        name: 'users',
+        component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue')
     }
 ]
 

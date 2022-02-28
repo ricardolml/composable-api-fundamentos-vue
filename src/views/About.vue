@@ -1,6 +1,9 @@
 <template>
     <div class="about">
         <h1>This is an about page</h1>
+        <hr>
+        <h3>{{title}}</h3>
+        <button @click="onChanageTitle" >cambiar titulo</button>
     </div>
 </template>
 
@@ -18,10 +21,14 @@ import {
     onDeactivated,
     onServerPrefetch,
     onMounted,
+
+    ref
 } from "vue";
 export default {
     setup() {
-        console.log("setup se llamo");
+
+        const title = ref('About');
+
         onActivated(() => {
             console.log("onActivated");
         })
@@ -58,6 +65,11 @@ export default {
         onUpdated(() => {
             console.log("onUpdated");
         })
+
+        return{
+            title,
+            onChanageTitle: () => title.value = "New About"
+        }
     },
 };
 </script>
