@@ -1,13 +1,46 @@
 <template>
-  <h1>Pakemon Page</h1>
+    <h1 v-if="!pokemon && !errorMessage">Buscando...</h1>
+    <h1 v-else-if="errorMessage">{{ errorMessage }}</h1>
+
+    <template v-else>
+        <h3>{{ pokemon.name }}</h3>
+        <img :src="pokemon.sprites.front_default" :alt="pokemon.name" />
+
+        <router-link :to="{ name: 'pokemon-search' }">Regresar</router-link>
+    </template>
 </template>
 
 <script>
-export default {
+import { useRoute, onBeforeRouteLeave } from "vue-router";
+import usePokemon from "@/composables/usePokemon";
+import { watch } from "vue";
 
-}
+export default {
+    setup() {
+        const route = useRoute();
+
+        const { errorMessage, isLoading, pokemon, searchPokemon } = usePokemon(
+            route.params.id
+        );
+
+        watch(
+            () => route.params.id,
+            () => searchPokemon( route.params.id )
+        );
+
+        onBeforeRouteLeave( () => {
+            const answer = window.confirm('¿Está seguro que desea salir?');
+            if( !answer ) return false // bloquea la salida
+        });
+
+        return {
+            errorMessage,
+            isLoading,
+            pokemon,
+        };
+    },
+};
 </script>
 
 <style>
-
 </style>
