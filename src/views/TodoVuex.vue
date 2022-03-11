@@ -28,17 +28,46 @@
             <li v-for="todo in getTodosByTab" :key="todo.id" :class="{ 'completed' : todo.completed }" @dblclick="toggleTodo( todo.id )">{{ todo.text }}</li>
         </ul>
     </div>
+
+    <button @click="openModal" >Crear Modal</button>
+
+    <Modal v-if="isOpen" @on:close='closeModal'>
+        <template v-slot:header>
+            <h2>Agregar tarea</h2>
+        </template>
+        <template v-slot:body>
+            <form @submit.prevent="guardar">
+                <input type="text" v-model="todo" placeholder="Nueva tarea">
+            </form>
+        </template>
+    </Modal>
 </template>
 
 <script>
 
+import {ref , defineAsyncComponent} from 'vue'
 import useTodos from '@/composables/useTodos'
 
 export default {
+
+    components: {
+        Modal: defineAsyncComponent( () => import('@/components/Modal.vue') )
+    },
     setup() {
         
-        const { currentTab, all, completed, pending, getTodosByTab, toggleTodo } = useTodos();
+        const { currentTab, all, completed, pending, getTodosByTab, toggleTodo, createTodo } = useTodos();
+        const isOpen = ref(false);
+        const todo = ref('');
 
+        const guardar = () => {
+
+            if( todo.value.length === 0 ) return
+
+            createTodo( todo );
+            isOpen.value = false;
+        }
+
+        
         return {
             all,
             completed,
@@ -46,6 +75,12 @@ export default {
             getTodosByTab,
             pending,
             toggleTodo,
+            guardar,
+            isOpen,
+            todo,
+
+            openModal: () => isOpen.value = true,
+            closeModal: () => isOpen.value = false,
         }
     },
 };
